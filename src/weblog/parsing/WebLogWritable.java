@@ -4,137 +4,137 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 
 public class WebLogWritable implements Writable {
 
 
 
-	private Text ipaddress;
-	private Text datetime;
-	private Text request;
-	private Text response;
-	private Text sentbyte;
-	private Text referer;
-	private Text browser;
+	private String ipaddress;
+	private String datetime;
+	private String request;
+	private String response;
+	private String sentbyte;
+	private String referer;
+	private String browser;
 	
 	
 	public WebLogWritable() {
 		super();
-		this.ipaddress = new Text();
-		this.datetime =  new Text();
-		this.request =  new Text();
-		this.response =  new Text();
-		this.sentbyte =  new Text();
-		this.referer =  new Text();
-		this.browser =  new Text();
+		this.ipaddress = new String();
+		this.datetime =  new String();
+		this.request =  new String();
+		this.response =  new String();
+		this.sentbyte =  new String();
+		this.referer =  new String();
+		this.browser =  new String();
 	}
 	
 	public void set(String ipaddress, String datetime, String request,
 			String response, String sentbyte, String referer, String browser) {
 		  // super();
 
-		  this.ipaddress.set(ipaddress);
-		  this.datetime.set(datetime);
-		  this.request.set(request);
-		  this.response.set(datetime);
-		  this.sentbyte.set(request);
-		  this.referer.set(datetime);
-		  this.browser.set(request);
+		  this.ipaddress=ipaddress;
+		  this.datetime=datetime;
+		  this.request=request;
+		  this.response=datetime;
+		  this.sentbyte=request;
+		  this.referer=datetime;
+		  this.browser=request;
 
 		 }
 	
-	public Text getIpaddress() {
+	public String getIpaddress() {
 		return ipaddress;
 	}
 
 
-	public void setIpaddress(Text ipaddress) {
+	public void setIpaddress(String ipaddress) {
 		this.ipaddress = ipaddress;
 	}
 
 
-	public Text getDatetime() {
+	public String getDatetime() {
 		return datetime;
 	}
 
 
-	public void setDatetime(Text datetime) {
+	public void setDatetime(String datetime) {
 		this.datetime = datetime;
 	}
 
 
-	public Text getRequest() {
+	public String getRequest() {
 		return request;
 	}
 
 
-	public void setRequest(Text request) {
+	public void setRequest(String request) {
 		this.request = request;
 	}
 
 
-	public Text getResponse() {
+	public String getResponse() {
 		return response;
 	}
 
 
-	public void setResponse(Text response) {
+	public void setResponse(String response) {
 		this.response = response;
 	}
 
 
-	public Text getSentbyte() {
+	public String getSentbyte() {
 		return sentbyte;
 	}
 
 
-	public void setSentbyte(Text sentbyte) {
+	public void setSentbyte(String sentbyte) {
 		this.sentbyte = sentbyte;
 	}
 
 
-	public Text getReferer() {
+	public String getReferer() {
 		return referer;
 	}
 
 
-	public void setReferer(Text referer) {
+	public void setReferer(String referer) {
 		this.referer = referer;
 	}
 
 
-	public Text getBrowser() {
+	public String getBrowser() {
 		return browser;
 	}
 
 
-	public void setBrowser(Text browser) {
+	public void setBrowser(String browser) {
 		this.browser = browser;
 	}
 
 
 	@Override
 	public void readFields(DataInput in) throws IOException {
-		ipaddress.readFields(in);
-		datetime.readFields(in);
-		request.readFields(in);
-		response.readFields(in);
-		sentbyte.readFields(in);
-		referer.readFields(in);
-		browser.readFields(in);
+		ipaddress = in.readUTF();
+		datetime=in.readUTF();
+		request=in.readUTF();
+		response=in.readUTF();
+		sentbyte=in.readUTF();
+		referer=in.readUTF();
+		browser=in.readUTF();
 	}
 
 	@Override
 	public void write(DataOutput out) throws IOException {
-		ipaddress.write(out);
-		datetime.write(out);
-		request.write(out);
-		response.write(out);
-		sentbyte.write(out);
-		referer.write(out);
-		browser.write(out);
+		
+		out.writeUTF(ipaddress);
+		out.writeUTF(datetime);
+		out.writeUTF(request);
+		out.writeUTF(response);
+		out.writeUTF(sentbyte);
+		out.writeUTF(referer);
+		out.writeUTF(browser);
 		
 	}
 
