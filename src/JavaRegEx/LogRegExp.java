@@ -48,7 +48,7 @@ interface LogExample {
 
   /** The sample log entry to be parsed. */
  // public static final String logEntryLine = "123.45.67.89 - - [27/Oct/2000:09:27:09 -0400] \"GET /java/javaResources.html HTTP/1.0\" 200 10450 \"-\" \"Mozilla/4.6 [en] (X11; U; OpenBSD 2.8 i386; Nav)\"";
-//  public static final String logEntryLine = "216.24.131.152 - - [25/Jul/2009:01:12:16 -0800] \"GET /?post=321 HTTP/1.1\" 200 8681 \"http://www.google.com.tw/search?hl=zh-TW&q=hadoop+0.20+mapper+example&btnG=Google+%E6%90%9C%E5%B0%8B&meta=&aq=f&oq=\" \"Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.5; en-US; rv:1.9.1.1) Gecko/20090715 Firefox/3.5.1\"";
+ //public static final String logEntryLine = "216.24.131.152 - - [25/Jul/2009:01:12:16 -0800] \"GET /?post=321 HTTP/1.1\" 200 8681 \"http://www.google.com.tw/search?hl=zh-TW&q=hadoop+0.20+mapper+example&btnG=Google+%E6%90%9C%E5%B0%8B&meta=&aq=f&oq=\" \"Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.5; en-US; rv:1.9.1.1) Gecko/20090715 Firefox/3.5.1\"";
   public static final String logEntryLine = "74.125.75.17 - - [25/Jul/2009:01:13:06 -0800] \"GET /gwidgets/alexa.xml HTTP/1.1\" 200 2969 \"-\" \"Mozilla/5.0 (compatible) Feedfetcher-Google; (+http://www.google.com/feedfetcher.html)\"";
 }
 
@@ -81,8 +81,20 @@ public class LogRegExp implements LogExample {
     System.out.println("Request: " + matcher.group(5));
     System.out.println("Response: " + matcher.group(6));
     System.out.println("Bytes Sent: " + matcher.group(7));
-    if (!matcher.group(8).equals("-"))
-      System.out.println("Referer: " + matcher.group(8));
-    System.out.println("Browser: " + matcher.group(9));
+      
+    
+	 if (!matcher.group(8).equals("-")){
+	      System.out.println("Referer: " + matcher.group(8));
+	      System.out.println("Browser: " + matcher.group(9));
+	 }else{
+		 System.out.println("Referer: " +"-");
+	      System.out.println("Browser: " + matcher.group(9));
+	 }
+//    String keywordpattern = "(p|q)=(.+?)&";
+//    Pattern p2 = Pattern.compile(keywordpattern);
+//    Matcher matcherkeyword = p2.matcher(matcher.group(8));
+//    
+//    System.out.println("Browser: " + matcherkeyword.group(1));
+//    System.out.println("Browser: " + matcherkeyword.group());
   }
 }

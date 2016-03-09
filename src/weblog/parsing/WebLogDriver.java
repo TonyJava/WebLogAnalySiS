@@ -1,7 +1,10 @@
 package weblog.parsing;
 
+import java.net.URI;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
@@ -27,6 +30,22 @@ public class WebLogDriver extends Configured implements Tool {
 		hdfsfile.delete(new Path(args[1]));
 		// configure output and input source
 		
+		  try{
+		        DistributedCache.addFileToClassPath(new Path("/user/cloudera/projects/WebLogAnalySiS/externalJars/gson-2.6.2.jar"), job.getConfiguration());
+		        DistributedCache.addFileToClassPath(new Path("/user/cloudera/projects/WebLogAnalySiS/externalJars/gson-2.6.2-sources.jar"), job.getConfiguration());
+		        DistributedCache.addFileToClassPath(new Path("/user/cloudera/projects/WebLogAnalySiS/externalJars/gson-2.6.2-javadoc.jar"), job.getConfiguration());
+			          }catch(Exception e){
+		        	System.out.println(e);
+		        }
+			
+			
+			 URI[] cacheFiles= job.getCacheFiles();
+			 if(cacheFiles != null) {
+				 for (URI cacheFile : cacheFiles) {
+					 System.out.println("Cache file ->" + cacheFile);
+				 }
+			 } 	
+			 
 		job.setInputFormatClass(WebLogInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
 		

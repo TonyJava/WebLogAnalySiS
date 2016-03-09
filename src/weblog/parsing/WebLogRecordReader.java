@@ -61,12 +61,22 @@ public class WebLogRecordReader extends RecordReader<Text, WebLogWritable> {
 	   
 	    Pattern p = Pattern.compile(logEntryPattern);
 	    Matcher matcher = p.matcher(weblogrecord);
+	    
+		String ipaddress = null;
+		String datetime=null;
+		String request=null;
+		String response=null;
+		String sentbyte=null;
+		String referer=null;
+		String browser=null;
+		
 	    if (!matcher.matches() || 
 	      NUM_FIELDS != matcher.groupCount()) {
 	      System.err.println("Bad log entry (or problem with RE?):");
 	      System.err.println(weblogrecord);
-	      return false;
-	    }
+	      return true;
+	 
+	    } 
 	   /* System.out.println("IP Address: " + matcher.group(1)); //([\\d.]+)
 	    System.out.println("Date&Time: " + matcher.group(4));//
 	    System.out.println("Request: " + matcher.group(5));
@@ -76,13 +86,7 @@ public class WebLogRecordReader extends RecordReader<Text, WebLogWritable> {
 	      System.out.println("Referer: " + matcher.group(8));
 	    System.out.println("Browser: " + matcher.group(9));
 	    */
-		String ipaddress;
-		String datetime;
-		String request;
-		String response;
-		String sentbyte;
-		String referer;
-		String browser;
+	
 		
 		ipaddress=matcher.group(1);
 		datetime=matcher.group(4);
@@ -93,9 +97,10 @@ public class WebLogRecordReader extends RecordReader<Text, WebLogWritable> {
 			 referer=matcher.group(8);
 			 browser=matcher.group(9);
 		 }else{
-			 referer=null;
+			 referer="-";
 			 browser=matcher.group(9);
 		 }
+	    
 		key =new Text(ipaddress);
 		value= new WebLogWritable();
 		value.set(ipaddress, datetime, request, response, sentbyte, referer, browser);

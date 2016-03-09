@@ -37,10 +37,10 @@ public class WebLogWritable implements Writable {
 		  this.ipaddress=ipaddress;
 		  this.datetime=datetime;
 		  this.request=request;
-		  this.response=datetime;
-		  this.sentbyte=request;
-		  this.referer=datetime;
-		  this.browser=request;
+		  this.response=response;
+		  this.sentbyte=sentbyte;
+		  this.referer=referer;
+		  this.browser=browser;
 
 		 }
 	
