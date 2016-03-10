@@ -58,23 +58,27 @@ public class WebLogRecordReader extends RecordReader<Text, WebLogWritable> {
 		String weblogrecord = lineReader.getCurrentValue().toString();
 		
 		String logEntryPattern = "^([\\d.]+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(.+?)\" (\\d{3}) (\\d+) \"([^\"]+)\" \"([^\"]+)\"";
-	   
+	    String refererPatten ="(.*?)&q=(.*?)&(.*?)";
+	    
 	    Pattern p = Pattern.compile(logEntryPattern);
+	    Pattern p_referer = Pattern.compile(refererPatten);
 	    Matcher matcher = p.matcher(weblogrecord);
 	    
 		String ipaddress = null;
-		String datetime=null;
+		String dateformat=null;
 		String request=null;
 		String response=null;
 		String sentbyte=null;
 		String referer=null;
 		String browser=null;
+		String keywordsString="";
+		String url=null;
 		
 	    if (!matcher.matches() || 
 	      NUM_FIELDS != matcher.groupCount()) {
 	      System.err.println("Bad log entry (or problem with RE?):");
 	      System.err.println(weblogrecord);
-	      return true;
+	      return nextKeyValue();
 	 
 	    } 
 	   /* System.out.println("IP Address: " + matcher.group(1)); //([\\d.]+)
@@ -89,21 +93,38 @@ public class WebLogRecordReader extends RecordReader<Text, WebLogWritable> {
 	
 		
 		ipaddress=matcher.group(1);
-		datetime=matcher.group(4);
+		dateformat=matcher.group(4);
 		request=matcher.group(5);
 		response=matcher.group(6);
 		sentbyte=matcher.group(7);
 		 if (!matcher.group(8).equals("-")){
 			 referer=matcher.group(8);
+			 url =matcher.group(8);
 			 browser=matcher.group(9);
+			
 		 }else{
-			 referer="-";
+			 referer=matcher.group(8);
 			 browser=matcher.group(9);
+			 url =matcher.group(9);
 		 }
-	    
+		 
+		// Matcher referermatcher = p_referer.matcher(referer);
+		 
+//		 if (referermatcher.matches() || 
+//			      matcher.groupCount()>1) {
+//		keywordsString=referermatcher.group(2);
+//		 }
+		 
+		//Key words parsing
+		 int keystart = referer.indexOf("q=");
+		 int keyend=referer.indexOf("&", keystart+2);
+		// System.out.println("Key Start"+keystart +"Key End" +keyend);
+		 if(keystart!=-1 && keyend!=-1){
+		 keywordsString=referer.substring(keystart+2, keyend);
+		 }
 		key =new Text(ipaddress);
 		value= new WebLogWritable();
-		value.set(ipaddress, datetime, request, response, sentbyte, referer, browser);
+		value.set(ipaddress, dateformat, request, response, sentbyte, referer, browser,keywordsString,url);
 				
 		return true;
 	}

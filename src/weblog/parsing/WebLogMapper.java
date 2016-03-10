@@ -7,6 +7,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 
 public class WebLogMapper extends Mapper<Text, WebLogWritable, NullWritable, Text> {
@@ -14,10 +15,11 @@ public class WebLogMapper extends Mapper<Text, WebLogWritable, NullWritable, Tex
 
 	protected void map(Text key, WebLogWritable value, Context context) throws IOException, InterruptedException {
 //		String[] tokens = value.toString().split(",");
-		  Gson gson = new Gson();  
+		  Gson gson = new GsonBuilder().disableHtmlEscaping().create();  
 		    // convert java object to JSON format,  
 		  // and returned as JSON formatted string  
-		  String json = gson.toJson(value);  			
+		  String json = gson.toJson(value)		;
+		//context.write(NullWritable.get(), new Text(json));
 		context.write(NullWritable.get(), new Text(json));
 			
 		}

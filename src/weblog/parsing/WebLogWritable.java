@@ -3,7 +3,9 @@ package weblog.parsing;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.Arrays;
 
+import org.apache.hadoop.io.ArrayPrimitiveWritable;
 import org.apache.hadoop.io.Writable;
 
 public class WebLogWritable implements Writable {
@@ -11,36 +13,62 @@ public class WebLogWritable implements Writable {
 
 
 	private String ipaddress;
-	private String datetime;
+	private String dateformat;
 	private String request;
 	private String response;
 	private String sentbyte;
 	private String referer;
 	private String browser;
+	private String keywordsString;
+	private String url;
 	
 	
 	public WebLogWritable() {
 		super();
-		this.ipaddress = new String();
-		this.datetime =  new String();
-		this.request =  new String();
-		this.response =  new String();
-		this.sentbyte =  new String();
-		this.referer =  new String();
-		this.browser =  new String();
+		this.ipaddress =null;
+		this.dateformat  =null;
+		this.request =null;
+		this.response=null;
+		this.sentbyte=null;
+		this.referer=null;
+		this.browser=null;
+		this.keywordsString =null;
+		this.url=null;
 	}
+
+
+	public String getKeywordsString() {
+		return keywordsString;
+	}
+
+	public void setKeywordsString(String keywordsString) {
+		this.keywordsString = keywordsString;
+	}
+
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
 	
-	public void set(String ipaddress, String datetime, String request,
-			String response, String sentbyte, String referer, String browser) {
+	public void set(String ipaddress, String dateformat, String request,
+			String response, String sentbyte, String referer,
+			String browser,String keywordsString,String url) {
 		  // super();
 
 		  this.ipaddress=ipaddress;
-		  this.datetime=datetime;
+		  this.dateformat=dateformat;
 		  this.request=request;
 		  this.response=response;
 		  this.sentbyte=sentbyte;
 		  this.referer=referer;
 		  this.browser=browser;
+		  this.keywordsString=keywordsString;
+		  this.url=url;
 
 		 }
 	
@@ -54,13 +82,13 @@ public class WebLogWritable implements Writable {
 	}
 
 
-	public String getDatetime() {
-		return datetime;
+	public String getdateformat() {
+		return dateformat;
 	}
 
 
-	public void setDatetime(String datetime) {
-		this.datetime = datetime;
+	public void setdateformat(String dateformat) {
+		this.dateformat = dateformat;
 	}
 
 
@@ -117,34 +145,38 @@ public class WebLogWritable implements Writable {
 	@Override
 	public void readFields(DataInput in) throws IOException {
 		ipaddress = in.readUTF();
-		datetime=in.readUTF();
+		dateformat=in.readUTF();
 		request=in.readUTF();
 		response=in.readUTF();
 		sentbyte=in.readUTF();
-		referer=in.readUTF();
+		referer=in.readUTF().toString();
 		browser=in.readUTF();
-	}
+		keywordsString=in.readUTF();
+		url=in.readUTF();
+		}
 
 	@Override
 	public void write(DataOutput out) throws IOException {
 		
 		out.writeUTF(ipaddress);
-		out.writeUTF(datetime);
+		out.writeUTF(dateformat);
 		out.writeUTF(request);
 		out.writeUTF(response);
 		out.writeUTF(sentbyte);
 		out.writeUTF(referer);
 		out.writeUTF(browser);
-		
+		out.writeUTF(keywordsString);
+		out.writeUTF(url);
 	}
 
 
 	@Override
 	public String toString() {
-		return "[ipaddress=" + ipaddress + ", datetime="
-				+ datetime + ", request=" + request + ", response=" + response
+		return "WebLogWritable [ipaddress=" + ipaddress + ", dateformat="
+				+ dateformat + ", request=" + request + ", response=" + response
 				+ ", sentbyte=" + sentbyte + ", referer=" + referer
-				+ ", browser=" + browser + "]";
+				+ ", browser=" + browser + ", keywordsString=" + keywordsString
+				+ ", url=" + url + "]";
 	}
 
 	
