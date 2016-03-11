@@ -1,0 +1,5 @@
+216.24.131.152 - - [25/Jul/2009:01:12:16 -0800] "GET /?post=321 HTTP/1.1" 200 8681 "http://www.google.com.tw/search?hl=zh-TW&q=hadoop+0.20+mapper+example&btnG=Google+%E6%90%9C%E5%B0%8B&meta=&aq=f&oq=" "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.5; en-US; rv:1.9.1.1) Gecko/20090715 Firefox/3.5.1"
+66.249.67.3 - - [28/Jul/2009:20:26:08 -0800] "GET /gadgets/adpowers/AlexaRank/ALL_ALL.xml HTTP/1.1" 200 1160 "-" "Mozilla/5.0 (compatible) Feedfetcher-Google; (+http://www.google.com/feedfetcher.html)"
+66.249.67.87 - - [28/Jul/2009:20:26:23 -0800] "GET /r.pl?http://www.nwbiodiesel.org/ HTTP/1.0" 302 283 "-" "Mozilla/5.0 (compatible; Yahoo! Slurp/3.0; http://help.yahoo.com/help/us/ysearch/slurp)"
+64.233.172.17 - - [28/Jul/2009:20:26:33 -0800] "GET /gnucache/index.php?get=1&net=gnutella&client=GNUC&version=1.1.1.6 HTTP/1.1" 404 146 "-" "Mozilla/4.0"
+74.125.74.193 - - [28/Jul/2009:20:27:02 -0800] "GET /gallery/main.php?g2_view=search.SearchScan&g2_form%5BuseDefaultSettings%5D=1&g2_return=%2Fgallery%2Fmain.php%3Fg2_itemId%3D15417&g2_returnName=photo HTTP/1.1" 200 6360 "-" "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"

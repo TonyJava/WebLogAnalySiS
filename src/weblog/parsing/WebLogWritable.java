@@ -172,7 +172,7 @@ public class WebLogWritable implements Writable {
 
 	@Override
 	public String toString() {
-		return "WebLogWritable [ipaddress=" + ipaddress + ", dateformat="
+		return "[ipaddress=" + ipaddress + ", dateformat="
 				+ dateformat + ", request=" + request + ", response=" + response
 				+ ", sentbyte=" + sentbyte + ", referer=" + referer
 				+ ", browser=" + browser + ", keywordsString=" + keywordsString
