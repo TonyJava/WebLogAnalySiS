@@ -1,6 +1,7 @@
 package weblog.parsing;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,7 +59,12 @@ public class WebLogRecordReader extends RecordReader<Text, WebLogWritable> {
 
 		String weblogrecord = lineReader.getCurrentValue().toString();
 		RegexMatches newweblog =new RegexMatches();
-		value = newweblog.parseWebLog(weblogrecord);
+		try {
+			value = newweblog.parseWebLog(weblogrecord);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if(value.getRequest().equals("BAD_RECORD")){
 			key =new Text("BAD_RECORD");
 		}else

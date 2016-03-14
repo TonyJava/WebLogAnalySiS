@@ -7,13 +7,16 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 public  class RegexMatches
 {
-	public WebLogWritable parseWebLog(String weblogstring) throws UnsupportedEncodingException{
+	public WebLogWritable parseWebLog(String weblogstring) throws UnsupportedEncodingException, ParseException{
 		WebLogWritable weblog = new WebLogWritable();
 		String weblogpattern = "^([\\d.]+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(.+?)\" (\\d{3}) (\\d+) \"([^\"]+)\" \"([^\"]+)\"";
 		// Create a Pattern object
@@ -22,7 +25,17 @@ public  class RegexMatches
 		Matcher weblogMatcher = r.matcher(weblogstring);
 		if (weblogMatcher.find( )) {
 			weblog.setIpaddress(weblogMatcher.group(1));
-			weblog.setdateformat(weblogMatcher.group(4));
+			weblog.setdateformat(parseDate(weblogMatcher.group(4)));
+			
+			SimpleDateFormat fromformatter = new SimpleDateFormat("dd/MMM/yyyy");
+			SimpleDateFormat toformatter = new SimpleDateFormat("yyyy-MM-dd");
+			
+			System.out.println(weblog.getdateformat());
+			Date date = fromformatter.parse(weblog.getdateformat());
+				System.out.println(date);
+				System.out.println(toformatter.format(date));
+				weblog.setdateformat(toformatter.format(date));
+				
 			weblog.setRequest(weblogMatcher.group(5));
 			weblog.setResponse(weblogMatcher.group(6));
 			weblog.setSentbyte(weblogMatcher.group(7));
@@ -30,7 +43,7 @@ public  class RegexMatches
 			weblog.setUrl(weblogMatcher.group(8));
 			weblog.setBrowser(weblogMatcher.group(9));
 			weblog.setKeywordsString(this.parsekeyWord(weblogMatcher.group(8)));
-			if (!weblogMatcher.group(8).equals("-")){
+			if (weblogMatcher.group(8).equals("-")){
 				weblog.setUrl(this.parseurl(weblogMatcher.group(9)));
 			}
 			else
@@ -64,21 +77,37 @@ public  class RegexMatches
 	public String parseurl(String weburl){
 		String userUrlEntryPattern = "(http|https)://(.*?)[/\\)\\?\\s$]";
 		// Create a Pattern object
-		
+		//System.out.println(" URL " + weburl);
 		Pattern urlpattern = Pattern.compile(userUrlEntryPattern);
 		// Now create matcher object.
 		Matcher weblogurlmatcher = urlpattern.matcher(weburl);
 		if (weblogurlmatcher.find( )) {
+		//	System.out.println("URL parsed  "+ weblogurlmatcher.group(2));
 			return weblogurlmatcher.group(2);
 		} else {
 			return "";
 		}
 	}
 
+	public String parseDate(String webdate){
+		String weblogdatePattern = "^(.*?):(.*?)";
+		// Create a Pattern object
+		//System.out.println(" URL " + weburl);
+		Pattern datepattern = Pattern.compile(weblogdatePattern);
+		// Now create matcher object.
+		Matcher weblogdatematcher = datepattern.matcher(webdate);
+		if (weblogdatematcher.find( )) {
+		//	System.out.println("URL parsed  "+ weblogurlmatcher.group(2));
+		
+				return weblogdatematcher.group(1);					
+		} else {
+			return "";
+		}
+	}
 
 //For running individually
 
-	public static void main( String args[] ) throws IOException{
+	public static void main( String args[] ) throws IOException, ParseException{
 
 		BufferedReader br = new BufferedReader(new FileReader("weblogintest/webintest.txt"));
 		RegexMatches testregexmatch = new RegexMatches();
@@ -87,17 +116,18 @@ public  class RegexMatches
 			String line = br.readLine();
 			while (line != null) {
 				
-				testregexmatch.parseWebLog(line);
+				System.out.println(testregexmatch.parseWebLog(line));
 				//    System.out.println(line);
-				System.out.println(testregexmatch.parseWebLog(line).toString());
-				System.out.println("URL"+ testregexmatch.parseWebLog(line).getUrl()+ "KeyWord  "+ testregexmatch.parseWebLog(line).getKeywordsString());
+			//	System.out.println(testregexmatch.parseWebLog(line).toString());
+			//	System.out.println("URL"+ testregexmatch.parseWebLog(line).getUrl()+ "KeyWord  "+ testregexmatch.parseWebLog(line).getKeywordsString());
 				
 				line = br.readLine();
 				}
              
-			System.out.println(testregexmatch.parsekeyWord("http://www.google.com.tw/search?hl=zh-TW&q=hadoop+0.20+mapper+example&btnG=Google+%E6%90%9C%E5%B0%8B&meta=&aq=f&oq="));
-			System.out.println(testregexmatch.parseurl("http://www.google.com.tw/search?hl=zh-TW&q=hadoop+0.20+mapper+example&btnG=Google+%E6%90%9C%E5%B0%8B&meta=&aq=f&oq="));
-		} finally {
+//			System.out.println(testregexmatch.parsekeyWord("http://www.google.com.tw/search?hl=zh-TW&q=hadoop+0.20+mapper+example&btnG=Google+%E6%90%9C%E5%B0%8B&meta=&aq=f&oq="));
+//			System.out.println(testregexmatch.parseurl("http://www.google.com.tw/search?hl=zh-TW&q=hadoop+0.20+mapper+example&btnG=Google+%E6%90%9C%E5%B0%8B&meta=&aq=f&oq="));
+//		
+			} finally {
 			br.close();
 		}
 
