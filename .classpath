@@ -68,5 +68,6 @@
 	<classpathentry kind="lib" path="/home/cloudera/lib/mrunit-0.9.0-incubating-hadoop2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gson_lib"/>
 	<classpathentry kind="lib" path="/home/cloudera/projects/WebLogAnalySiS/jar/json/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/usr/lib/hive/lib/hive-exec-0.10.0-cdh4.7.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
