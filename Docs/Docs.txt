@@ -1,0 +1,129 @@
+
+
+WebLogAnalySiS
+
+/user/cloudera/projects/WebLogAnalySiS
+
+hadoop jar WebLogMapper.jar weblog.parsing.WebLogDriver /user/cloudera/projects/WebLogAnalySiS/input /user/cloudera/projects/WebLogAnalySiS/output
+
+
+/user/cloudera/projects/WebLogAnalySiS/output
+
+
+Hive:
+##############
+
+create database WebLogAnalySiS
+
+ADD jar /home/cloudera/projects/WebLogAnalySiS/jar/jsonserde/json-serde-1.3.1-SNAPSHOT-jar-with-dependencies.jar
+
+stg_weblog  Table:-
+
+CREATE EXTERNAL TABLE stg_weblog (
+ipaddress String,
+dateformat String,
+request String,
+response String,
+sentbyte String,
+referer String,
+browser String,
+keywordsString String,
+url String
+)
+ROW FORMAT SERDE "org.openx.data.jsonserde.JsonSerDe"	
+LOCATION '/user/cloudera/projects/WebLogAnalySiS/output';
+
+
+
+
+select word,count(1) as count from
+(SELECT explode(split(keywordsString, ' ')) AS word FROM stg_weblog where keywordsString<>"" )tempTable
+group by word
+
+
+select word,count(1) as count from
+SELECT split(keywordsString, '+') from  stg_weblog 
+
+tgt_weblog
+
+CREATE TABLE tgt_weblog (
+dateformat String,
+keywordsString String,
+url String
+)
+PARTITIONED BY(year INT, month INT)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE;
+
+
+
+INSERT OVERWRITE TABLE tgt_weblog
+PARTITION (year,month)
+select dateformat,keywordsString,url,year(dateformat),month(dateformat)
+from stg_weblog
+
+set hive.exec.dynamic.partition.mode=nonstrict;
+
+
+
+
+
+
+/user/hive/warehouse/webloganalysis.db/tgt_weblog/year=2009/month=7/000000_0
+
+select  month,url,noofwords from
+(select month,url,count(*) noofwords from tgt_weblog
+group by month,url
+having count(*)>1) words order by words.noofwords
+
+sorted by noofwords
+limit 10;
+
+select month,weblog_count.url, weblog_count.noofwords from (
+select month,url,count(*) noofwords from tgt_weblog
+group by month,url
+having count(*)>1) weblog_count sort by weblog_count.noofwords desc  limit 10
+
+
+
+order by count(*)
+
+select word,count(1) as count from
+(SELECT explode(split(keywordsString, ' ')) AS word FROM stg_weblog where keywordsString<>"" )tempTable
+group by word
+
+
+
+ADD jar /home/cloudera/projects/WebLogAnalySiS/jar/rankRecordudf.jar
+
+create temporary function rank as 'hive.udfs.rankRecord';
+
+ADD jar /home/cloudera/projects/WebLogAnalySiS/jar/rankRecordudf.jar
+
+select * 
+from 
+(select *,rank(month) as row_number 
+	from (
+		select month,url,count(*) noofwords from tgt_weblog
+		group by month,url
+		having count(*)>1
+   )A
+)B
+where row_number < 5
+
+
+ELECT * 
+FROM
+(
+   SELECT *, rank(user) as row_number
+   FROM (
+        SELECT user, category, value
+        FROM $compTable
+        WHERE user is NOT NULL AND AND ctr > 0
+        DISTRIBUTE BY user
+        SORT BY user, value desc
+   ) A
+) B
+WHERE row_number < 5
+ORDER BY user, row_number
+
