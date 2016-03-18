@@ -1,6 +1,6 @@
 
 
-WebLogAnalySiS
+uWebLogAnalySiS
 
 /user/cloudera/projects/WebLogAnalySiS
 
@@ -55,6 +55,7 @@ PARTITIONED BY(year INT, month INT)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
 STORED AS TEXTFILE;
 
+hdfs dfsadmin -safemode leave
 
 
 INSERT OVERWRITE TABLE tgt_weblog
@@ -102,28 +103,73 @@ ADD jar /home/cloudera/projects/WebLogAnalySiS/jar/rankRecordudf.jar
 
 select * 
 from 
-(select *,rank(month) as row_number 
-	from (
-		select month,url,count(*) noofwords from tgt_weblog
-		group by month,url
-		having count(*)>1
-   )A
+(select *,UDFNumberRows(month) as row_number 
+from (
+select month,url,count(*) noofurl from tgt_weblog
+group by month,url
+having count(*)>1
+DISTRIBUTE BY month
+SORT by month,noofurl desc 
+)A
+DISTRIBUTE BY month
+SORT by month,noofurl desc)B
+where row_number < 6
+
+
+explain select * 
+from 
+(select *,UDFNumberRows(year,month) as row_number 
+from (
+select year,month,url,count(*) noofurl from tgt_weblog
+where url is not null
+and  url <>""
+group by year,month,url
+having count(*)>1
+DISTRIBUTE BY year,month
+SORT by year,month,noofurl desc 
+)A
 )B
-where row_number < 5
+where row_number < 6
 
 
-ELECT * 
-FROM
-(
-   SELECT *, rank(user) as row_number
-   FROM (
-        SELECT user, category, value
-        FROM $compTable
-        WHERE user is NOT NULL AND AND ctr > 0
-        DISTRIBUTE BY user
-        SORT BY user, value desc
-   ) A
-) B
-WHERE row_number < 5
-ORDER BY user, row_number
+add jar /home/cloudera/projects/WebLogAnalySiS/jar/UDFNumberRows.jar;
+create temporary function UDFNumberRows as 'hive.udfs.UDFNumberRows';
+
+
+
+select * 
+from 
+(select *,UDFNumberRows(year,month) as row_number 
+from (
+select year,month,word,count(*) noofwords from tgt_weblog LATERAL VIEW explode(split(keywordsstring, ' ')) keywordsview AS word
+where word is not null
+and  word <>""
+group by year,month,word
+having count(*)>1
+DISTRIBUTE BY year,month
+SORT by year,month,noofwords desc 
+)A
+)B
+where row_number < 6
+
+
+SELECT name, sub
+> FROM employees
+> LATERAL VIEW explode(subordinates) subView AS sub;
+John Doe Mary Smith
+John Doe Todd Jones
+Mary Smith Bill King
+
+
+WebLogAnalySiS
+
+
+/user/cloudera/projects/WebLogAnalySiS/scripts/dynamicLoadTarget.hql
+/user/cloudera/projects/WebLogAnalySiS/scripts/mostSearchedUrl.hql
+/user/cloudera/projects/WebLogAnalySiS/scripts/mostSearchedWord.hql
+
+
+/home/cloudera/projects/WebLogAnalySiS/jar/jsonserde/
+
+
 
